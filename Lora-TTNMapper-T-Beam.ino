@@ -11,7 +11,7 @@
 #define BUILTIN_LED 21
 
 char s[32]; // used to sprintf for Serial output
-uint8_t txBuffer[9];
+uint8_t txBuffer[13];
 gps gps;
 
 // These callbacks are only used in over-the-air activation, so they are
@@ -23,7 +23,7 @@ void os_getDevKey (u1_t* buf) { }
 
 static osjob_t sendjob;
 // Schedule TX every this many seconds (might become longer due to duty cycle limitations).
-const unsigned TX_INTERVAL = 30;
+const unsigned TX_INTERVAL = 120;
 
 // Pin mapping
 const lmic_pinmap lmic_pins = {
@@ -115,7 +115,7 @@ void do_send(osjob_t* j) {
     {
       // Prepare upstream data transmission at the next possible time.
       gps.buildPacket(txBuffer);
-      LMIC_setTxData2(1, txBuffer, sizeof(txBuffer), 0);
+      LMIC_setTxData2(2, txBuffer, sizeof(txBuffer), 0);
       Serial.println(F("Packet queued"));
       digitalWrite(BUILTIN_LED, HIGH);
     }
