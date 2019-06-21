@@ -2,6 +2,8 @@
 #include <hal/hal.h>
 #include <WiFi.h>
 
+#include "esp_sleep.h"
+
 // UPDATE the config.h file in the same folder WITH YOUR TTN KEYS AND ADDR.
 #include "config.h"
 #include "gps.h"
@@ -78,7 +80,10 @@ void onEvent (ev_t ev) {
         Serial.println(s);
       }
       // Schedule next transmission
-      os_setTimedCallback(&sendjob, os_getTime() + sec2osticks(TX_INTERVAL), do_send);
+      //os_setTimedCallback(&sendjob, os_getTime() + sec2osticks(TX_INTERVAL), do_send);
+      esp_sleep_enable_timer_wakeup(TX_INTERVAL*1000000);
+      esp_deep_sleep_start();
+      do_send(&sendjob);
       break;
     case EV_LOST_TSYNC:
       Serial.println(F("EV_LOST_TSYNC"));
